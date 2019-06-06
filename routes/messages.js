@@ -30,4 +30,10 @@ router.get('/', function(req, res) {
   })
 })
 
+router.get('/clear', function(req, res) {
+  Message.deleteMany({}, (err) => {
+    res.json(err)
+  })
+})
+
 module.exports = router;
