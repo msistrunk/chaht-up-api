@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
+require('dotenv').config()
 
 var mongoose = require("mongoose");
-mongoose.connect("mongodb+srv://msistrunk:chahtupdev@cluster0-k5m3m.mongodb.net/chahtup?retryWrites=true&w=majority", {useNewUrlParser: true});
+mongoose.connect(process.env.DB, {useNewUrlParser: true});
 
 var messageSchema = new mongoose.Schema({
   author: String,
