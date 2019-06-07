@@ -23,8 +23,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(`${__dirname}/../chaht-up/build`));
+app.get('/', (req, res) => {
+  res.sendFile('index.html', { root: `${__dirname}/../chaht-up/build` });
+});
 
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/chat', chatRouter);
 app.use('/messages', messagesRouter);
