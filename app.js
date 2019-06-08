@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var chatRouter = require('./routes/chat');
 var messagesRouter = require('./routes/messages');
 
@@ -28,7 +27,6 @@ app.get('/', (req, res) => {
   res.sendFile('index.html', { root: `${__dirname}/../chaht-up/build` });
 });
 
-app.use('/users', usersRouter);
 app.use('/chat', chatRouter);
 app.use('/messages', messagesRouter);
 
