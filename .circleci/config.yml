@@ -41,4 +41,4 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            ssh -o "StrictHostKeyChecking=no" $DROPLET_USER@$DROPLET_IP "cd ../../var/www/chahtup.mmrdevs.com/; git pull origin master; npm install; pm2 restart 1;"
+            ssh -o "StrictHostKeyChecking=no" $DROPLET_USER@$DROPLET_IP "cd ../../var/www/chahtup.mmrdevs.com/ && git pull origin master && npm install && pm2 restart 1;"
