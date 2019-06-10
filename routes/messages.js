@@ -17,7 +17,7 @@ router.post('/', function(req, res) {
   console.log(req.body);
   myMessage.save()
   .then(item => {
-    req.app.io.emit('chat message', item.message);
+    req.app.io.emit('chat message', item);
     res.send("Message saved");
   })
   .catch(err => {

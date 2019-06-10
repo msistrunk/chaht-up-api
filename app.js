@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/chat', chatRouter);
-app.use('/messages', messagesRouter);
+app.use('/api/messages', messagesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
