@@ -7,8 +7,8 @@ jobs:
 
     steps:
       - add_ssh_keys:
-              fingerprints:
-                - "8b:3c:ce:ed:1e:b5:67:c2:ff:dd:1d:90:38:4d:19:8d"
+          fingerprints:
+            - '8b:3c:ce:ed:1e:b5:67:c2:ff:dd:1d:90:38:4d:19:8d'
       - checkout
 
       # Download and cache dependencies
@@ -25,6 +25,8 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      # run linter
+      # - run: npm run lint
       # run tests!
       - run: npm test
       - run:
