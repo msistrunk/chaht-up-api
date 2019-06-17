@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 var chatRouter = require('./routes/chat');
 var messagesRouter = require('./routes/messages');
 
@@ -29,6 +29,7 @@ app.get('/', (req, res) => {
 
 app.use('/chat', chatRouter);
 app.use('/api/messages', messagesRouter);
+app.use('/api/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
