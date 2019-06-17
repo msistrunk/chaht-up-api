@@ -1,16 +1,17 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var usersRouter = require('./routes/users');
-var chatRouter = require('./routes/chat');
-var messagesRouter = require('./routes/messages');
+const app = express();
+const server = app.listen(3000);
+const io = require('socket.io').listen(server); // this tells socket.io to use our express
 
-var app = express();
-var server = app.listen(3000);
-var io = require('socket.io').listen(server); // this tells socket.io to use our express 
+const usersRouter = require('./routes/users');
+const chatRouter = require('./routes/chat');
+const messagesRouter = require('./routes/messages');
+
 app.io = io;
 
 // view engine setup
@@ -32,12 +33,12 @@ app.use('/api/messages', messagesRouter);
 app.use('/api/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -47,8 +48,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-io.sockets.on('connection', function (socket) {
-  socket.on('chat message', function(msg){
+io.sockets.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
     io.emit('chat message', msg);
   });
 });
