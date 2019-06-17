@@ -1,21 +1,16 @@
 var express = require('express');
 var router = express.Router();
+let Message = require('../models/message');
 require('dotenv').config()
 
 var mongoose = require("mongoose");
 mongoose.connect(process.env.DB, {useNewUrlParser: true});
 
-var messageSchema = new mongoose.Schema({
-  author: String,
-  message: String
- });
- var Message = mongoose.model("Message", messageSchema);
-
 /* POST messages. */
 router.post('/', function(req, res) {
-  var myMessage = new Message(req.body);
-  console.log(req.body);
-  myMessage.save()
+  var newMessage = new Message(req.body);
+  newMessage.timestamp = Date.now();
+  newMessage.save()
   .then(item => {
     req.app.io.emit('chat message', item);
     res.send("Message saved");

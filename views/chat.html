@@ -33,7 +33,7 @@
         $(function () {
             var socket = io();
             
-            $.get("https://chahtup.mmrdevs.com/messages", function(data){
+            $.get("https://chahtup.mmrdevs.com/api/messages", function(data){
               data.forEach(msg => {
                 $('#messages').append($('<li>').text(msg.message));
               })
@@ -41,7 +41,7 @@
 
             $('form').submit(function(e){
               e.preventDefault();
-              $.post("https://chahtup.mmrdevs.com/messages", { author: "anonymous", message: $('#m').val() })
+              $.post("https://chahtup.mmrdevs.com/api/messages", { author: "anonymous", message: $('#m').val() })
               .fail(function() {
                 alert( "an error occurred" );
               })
@@ -55,7 +55,7 @@
 
             $('#clear').click(() => {
               $('#messages').empty();
-              $.get("https://chahtup.mmrdevs.com/messages/clear");
+              $.get("https://chahtup.mmrdevs.com/api/messages/clear");
             })
         });
     </script>
