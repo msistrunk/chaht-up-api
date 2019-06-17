@@ -1,6 +1,6 @@
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var messageSchema = new mongoose.Schema({
+const messageSchema = new mongoose.Schema({
   author: String,
   message: String,
   timestamp: Date

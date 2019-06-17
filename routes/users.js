@@ -1,23 +1,24 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const uuidv4 = require('uuid/v4');
-let User = require('../models/user');
+const User = require('../models/user');
 require('dotenv').config()
 
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 mongoose.connect(process.env.DB, {useNewUrlParser: true});
 
 /* POST api/user/register */
 router.post('/register', function(req, res) {
-  User.find({username: req.body.username}, (err, user) => {
+  const { username } = req.body;
+  User.find({username}, (err, user) => {
     if(user.length){
       res.send({error: 'user already created'});
     }
     else{
       bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-        var newUser = new User({username: req.body.username, password: hash, id: uuidv4()})
+        let newUser = new User({username, password: hash, id: uuidv4()})
         // Store hash in your password DB.
         newUser.save()
         .then(item => {

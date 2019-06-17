@@ -9,7 +9,7 @@ var chatRouter = require('./routes/chat');
 var messagesRouter = require('./routes/messages');
 
 var app = express();
-var server = app.listen(3000);
+var server = app.listen(3001);
 var io = require('socket.io').listen(server); // this tells socket.io to use our express 
 app.io = io;
 
