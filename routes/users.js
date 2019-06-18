@@ -49,6 +49,8 @@ router.post('/login', (req, res) => {
     if (user.length) {
       bcrypt.compare(req.body.password, user[0].password, (error, authenticated) => {
         if (authenticated) {
+          req.session.userId = user[0].id;
+          req.session.username = user[0].username;
           res.send({
             authenticated: true,
           });
