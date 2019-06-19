@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const uuidv4 = require('uuid/v4');
 const mongoose = require('mongoose');
 const User = require('../models/user');
+const auth = require('../middlewares/authorized');
 
 const router = express.Router();
 const saltRounds = 10;
@@ -40,7 +41,6 @@ router.post('/register', (req, res) => {
   });
 });
 
-/* @todo: make this return a token or something for better authentication */
 /* POST api/user/login */
 router.post('/login', (req, res) => {
   User.find({
@@ -65,6 +65,16 @@ router.post('/login', (req, res) => {
         authenticated: false,
       });
     }
+  });
+});
+
+/* POST api/user/logout */
+router.post('/logout', auth, (req, res) => {
+  req.session.destroy((err) => {
+    if (!err) {
+      res.send({ logout: true });
+    }
+    res.send({ logout: false });
   });
 });
 

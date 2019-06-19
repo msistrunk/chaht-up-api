@@ -26,7 +26,6 @@ router.post('/', auth, (req, res) => {
 });
 
 router.get('/', auth, (req, res) => {
-  console.log(req.session);
   if (!req.session.username) {
     res.status(401).send('unauthorized');
   } else {
