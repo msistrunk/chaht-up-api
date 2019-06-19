@@ -30,7 +30,7 @@ router.post('/register', (req, res) => {
         // Store hash in your password DB.
         newUser.save()
           .then(() => {
-            res.send('new user created');
+            res.send({ created: true });
           })
           .catch(() => {
             res.status(400).send('unable to register');
