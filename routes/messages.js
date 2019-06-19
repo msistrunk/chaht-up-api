@@ -1,15 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Message = require('../models/message');
+const auth = require('../middlewares/authorized');
 require('dotenv').config();
 
 const router = express.Router();
 mongoose.connect(process.env.DB, { useNewUrlParser: true });
 
 /* POST messages. */
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
   if (!req.session.username) {
-    res.status(401).send('unathorized');
+    res.status(401).send('unauthorized');
   } else {
     const newMessage = new Message(req.body);
     newMessage.timestamp = Date.now();
@@ -24,9 +25,10 @@ router.post('/', (req, res) => {
   }
 });
 
-router.get('/', (req, res) => {
+router.get('/', auth, (req, res) => {
+  console.log(req.session);
   if (!req.session.username) {
-    res.status(401).send('unathorized');
+    res.status(401).send('unauthorized');
   } else {
     Message.find({}, (err, messages) => {
       res.json(messages);
@@ -34,9 +36,10 @@ router.get('/', (req, res) => {
   }
 });
 
-router.get('/clear', (req, res) => {
-  if (!req.session.username) {
-    res.status(401).send('unathorized');
+router.get('/clear', auth, (req, res) => {
+  const sess = req.session;
+  if (!sess.username) {
+    res.status(401).send('unauthorized');
   } else {
     Message.deleteMany({}, (err) => {
       res.json(err);

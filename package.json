@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "lint": "./node_modules/.bin/eslint . --ext .js",
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
