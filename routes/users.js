@@ -14,63 +14,71 @@ mongoose.connect(process.env.DB, {
 });
 
 /* POST api/user/register */
-router.post('/register', (req, res) => {
-  const { username } = req.body;
-  User.find({ username }, (err, user) => {
-    if (user.length) {
-      res.send({
-        error: 'user already created',
-      });
-    } else {
-      bcrypt.hash(req.body.password, saltRounds, (error, hash) => {
-        const newUser = new User({
-          username,
-          password: hash,
-          id: uuidv4(),
-        });
-        // Store hash in your password DB.
-        newUser.save()
-          .then(() => {
-            res.send({ created: true });
-          })
-          .catch(() => {
-            res.status(400).send('unable to register');
-          });
-      });
+/* eslint-disable-next-line consistent-return */
+router.post('/register', async (req, res) => {
+  const { email, password, username } = req.body;
+  const newUser = new User({
+    email,
+    id: uuidv4(),
+    username,
+  });
+
+  const usernameExists = await User.exists({ username });
+  const emailExists = await User.exists({ email });
+
+  const exists = {
+    ...(usernameExists && { usernameExists }),
+    ...(emailExists && { emailExists }),
+  };
+
+  if (Object.keys(exists).length) {
+    return res.status(400).send(exists);
+  }
+  bcrypt.hash(password, saltRounds, async (errors, hash) => {
+    newUser.password = hash;
+    try {
+      await newUser.save();
+      res.send({ created: true });
+    } catch (saveError) {
+      res.status(400).send(saveError);
     }
   });
 });
 
 /* POST api/user/login */
 router.post('/login', (req, res) => {
-  User.find({
-    username: req.body.username,
-  }, (err, user) => {
-    if (user.length) {
-      bcrypt.compare(req.body.password, user[0].password, (error, authenticated) => {
-        if (authenticated) {
-          req.session.userId = user[0].id;
-          req.session.username = user[0].username;
-          res.send({
-            authenticated: true,
-          });
-        } else {
-          res.send({
-            authenticated: false,
-          });
-        }
-      });
-    } else {
-      res.send({
-        authenticated: false,
-      });
-    }
-  });
+  const { password, username } = req.body;
+  User.find(
+    {
+      username,
+    },
+    (err, user) => {
+      if (user.length) {
+        bcrypt.compare(password, user[0].password, (error, authenticated) => {
+          if (authenticated) {
+            req.session.userId = user[0].id;
+            req.session.username = user[0].username;
+            res.send({
+              authenticated: true,
+            });
+          } else {
+            res.send({
+              authenticated: false,
+            });
+          }
+        });
+      } else {
+        res.send({
+          authenticated: false,
+        });
+      }
+    },
+  );
 });
 
 /* POST api/user/logout */
 router.post('/logout', auth, (req, res) => {
-  req.session.destroy((err) => {
+  req.session.destroy(err => {
     if (!err) {
       res.send({ logout: true });
     }
