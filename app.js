@@ -5,9 +5,10 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+require('dotenv').config();
 
 const app = express();
-const server = app.listen(3000);
+const server = app.listen(process.env.ROUTE || 3000);
 const io = require('socket.io').listen(server); // this tells socket.io to use our express
 
 const usersRouter = require('./routes/users');
@@ -26,16 +27,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(`${__dirname}/../chaht-up/build`));
-app.use(session({
-  key: 'user_sid',
-  store: new MongoStore({ url: process.env.DB }),
-  secret: 'dreamteam',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 1000 * 60 * 60,
-  },
-}));
+app.use(
+  session({
+    key: 'user_sid',
+    store: new MongoStore({ url: process.env.DB }),
+    secret: 'dreamteam',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60,
+    },
+  }),
+);
 
 app.use('/chat', chatRouter);
 app.use('/api/messages', messagesRouter);
@@ -60,8 +63,8 @@ app.use((err, req, res) => {
   res.render('error');
 });
 
-io.sockets.on('connection', (socket) => {
-  socket.on('chat message', (msg) => {
+io.sockets.on('connection', socket => {
+  socket.on('chat message', msg => {
     io.emit('chat message', msg);
   });
 });
