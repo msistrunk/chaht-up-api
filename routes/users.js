@@ -46,34 +46,26 @@ router.post('/register', async (req, res) => {
 });
 
 /* POST api/user/login */
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const { password, username } = req.body;
-  User.find(
-    {
-      username,
-    },
-    (err, user) => {
-      if (user.length) {
-        bcrypt.compare(password, user[0].password, (error, authenticated) => {
-          if (authenticated) {
-            req.session.userId = user[0].id;
-            req.session.username = user[0].username;
-            res.send({
-              authenticated: true,
-            });
-          } else {
-            res.send({
-              authenticated: false,
-            });
-          }
-        });
-      } else {
-        res.send({
-          authenticated: false,
-        });
-      }
-    },
-  );
+  try {
+    const usernameRegex = new RegExp(`^${username}$`, 'i');
+    const user = await User.findOne({ username: usernameRegex });
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      throw new Error('Invalid Login');
+    }
+    req.session.userId = user.id;
+    req.session.username = user.username;
+    res.send({
+      authenticated: true,
+    });
+  } catch (error) {
+    res.send({
+      authenticated: false,
+    });
+    console.log(error);
+  }
 });
 
 /* POST api/user/logout */
