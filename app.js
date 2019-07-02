@@ -14,6 +14,7 @@ const io = require('socket.io').listen(server); // this tells socket.io to use o
 const usersRouter = require('./routes/users');
 const chatRouter = require('./routes/chat');
 const messagesRouter = require('./routes/messages');
+const passwordRouter = require('./routes/password');
 
 app.io = io;
 
@@ -43,6 +44,7 @@ app.use(
 app.use('/chat', chatRouter);
 app.use('/api/messages', messagesRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/password', passwordRouter);
 app.get('*', (req, res) => {
   res.sendFile('index.html', { root: `${__dirname}/../chaht-up/build` });
 });
