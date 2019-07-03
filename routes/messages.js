@@ -1,11 +1,9 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const Message = require('../models/message');
 const auth = require('../middlewares/authorized');
 require('dotenv').config();
 
 const router = express.Router();
-mongoose.connect(process.env.DB, { useNewUrlParser: true });
 
 /* POST messages. */
 router.post('/', auth, (req, res) => {

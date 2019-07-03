@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 require('dotenv').config();
@@ -15,6 +16,11 @@ const usersRouter = require('./routes/users');
 const chatRouter = require('./routes/chat');
 const messagesRouter = require('./routes/messages');
 const passwordRouter = require('./routes/password');
+
+
+mongoose.connect(process.env.DB, {
+  useNewUrlParser: true,
+});
 
 app.io = io;
 

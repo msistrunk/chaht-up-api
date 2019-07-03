@@ -1,7 +1,6 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const uuidv4 = require('uuid/v4');
-const mongoose = require('mongoose');
 const User = require('../models/user');
 const auth = require('../middlewares/authorized');
 
@@ -9,9 +8,7 @@ const router = express.Router();
 const saltRounds = 10;
 require('dotenv').config();
 
-mongoose.connect(process.env.DB, {
-  useNewUrlParser: true,
-});
+
 
 /* POST api/user/register */
 /* eslint-disable-next-line consistent-return */

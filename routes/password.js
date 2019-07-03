@@ -1,15 +1,12 @@
 const express = require('express');
 const crypto = require('crypto');
-const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const User = require('../models/user');
 
 const router = express.Router();
 require('dotenv').config();
 
-mongoose.connect(process.env.DB, {
-  useNewUrlParser: true,
-});
+
 
 /* POST api/user/register */
 /* eslint-disable-next-line consistent-return */
