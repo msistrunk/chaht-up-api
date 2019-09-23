@@ -1,27 +1,20 @@
-const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-require('dotenv').config();
 
 const app = express();
-const server = app.listen(process.env.ROUTE || 3000);
-const io = require('socket.io').listen(server); // this tells socket.io to use our express
-
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 const usersRouter = require('./routes/users');
 const chatRouter = require('./routes/chat');
 const messagesRouter = require('./routes/messages');
 
-app.io = io;
+require('dotenv').config();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+const port = process.env.PORT;
 
-app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -39,7 +32,6 @@ app.use(
     },
   }),
 );
-
 app.use('/chat', chatRouter);
 app.use('/api/messages', messagesRouter);
 app.use('/api/users', usersRouter);
@@ -47,26 +39,10 @@ app.get('*', (req, res) => {
   res.sendFile('index.html', { root: `${__dirname}/../chaht-up/build` });
 });
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
+io.on('connection', () => {
+  console.log('a user is connected');
 });
 
-// error handler
-app.use((err, req, res) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+const server = http.listen(port, () => {
+  console.log('server is running on port', server.address().port);
 });
-
-io.sockets.on('connection', socket => {
-  socket.on('chat message', msg => {
-    io.emit('chat message', msg);
-  });
-});
-
-module.exports = app;
